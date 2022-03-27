@@ -25,9 +25,10 @@ func initApp(confServer *conf.Server, confData *conf.Data, logger log.Logger) (*
 	if err != nil {
 		return nil, nil, err
 	}
-	greeterRepo := data.NewGreeterRepo(dataData, logger)
-	greeterUsecase := biz.NewGreeterUsecase(greeterRepo, logger)
-	realWorldService := service.NewRealWorldService(greeterUsecase, logger)
+	userRepo := data.NewUserRepo(dataData, logger)
+	profileRepo := data.NewProfileRepo(dataData, logger)
+	userUsecase := biz.NewUserUsecase(userRepo, profileRepo, logger)
+	realWorldService := service.NewRealWorldService(userUsecase, logger)
 	httpServer := server.NewHTTPServer(confServer, realWorldService, logger)
 	grpcServer := server.NewGRPCServer(confServer, realWorldService, logger)
 	app := newApp(logger, httpServer, grpcServer)

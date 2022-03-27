@@ -35,11 +35,11 @@ type RealWorldClient interface {
 	CreateArticle(ctx context.Context, in *CreateArticleRequest, opts ...grpc.CallOption) (*SingleArticleReply, error)
 	UpdateArticle(ctx context.Context, in *UpdateArticleRequest, opts ...grpc.CallOption) (*SingleArticleReply, error)
 	DeleteArticle(ctx context.Context, in *DeleteArticleRequest, opts ...grpc.CallOption) (*SingleArticleReply, error)
-	AddComments(ctx context.Context, in *AddCommentsRequest, opts ...grpc.CallOption) (*SingleComment, error)
+	AddComment(ctx context.Context, in *AddCommentRequest, opts ...grpc.CallOption) (*SingleCommentReply, error)
 	GetComments(ctx context.Context, in *GetCommentsRequest, opts ...grpc.CallOption) (*MultipleCommentsReply, error)
-	DeleteComment(ctx context.Context, in *DeleteCommentRequest, opts ...grpc.CallOption) (*SingleComment, error)
-	FavoriteArticle(ctx context.Context, in *FavoriteArticleRequest, opts ...grpc.CallOption) (*Article, error)
-	UnFavoriteArticle(ctx context.Context, in *UnFavoriteArticleRequest, opts ...grpc.CallOption) (*Article, error)
+	DeleteComment(ctx context.Context, in *DeleteCommentRequest, opts ...grpc.CallOption) (*SingleCommentReply, error)
+	FavoriteArticle(ctx context.Context, in *FavoriteArticleRequest, opts ...grpc.CallOption) (*SingleArticleReply, error)
+	UnFavoriteArticle(ctx context.Context, in *UnFavoriteArticleRequest, opts ...grpc.CallOption) (*SingleArticleReply, error)
 	GetTags(ctx context.Context, in *GetTagsRequest, opts ...grpc.CallOption) (*TagListReply, error)
 }
 
@@ -168,9 +168,9 @@ func (c *realWorldClient) DeleteArticle(ctx context.Context, in *DeleteArticleRe
 	return out, nil
 }
 
-func (c *realWorldClient) AddComments(ctx context.Context, in *AddCommentsRequest, opts ...grpc.CallOption) (*SingleComment, error) {
-	out := new(SingleComment)
-	err := c.cc.Invoke(ctx, "/realworld.v1.RealWorld/AddComments", in, out, opts...)
+func (c *realWorldClient) AddComment(ctx context.Context, in *AddCommentRequest, opts ...grpc.CallOption) (*SingleCommentReply, error) {
+	out := new(SingleCommentReply)
+	err := c.cc.Invoke(ctx, "/realworld.v1.RealWorld/AddComment", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -186,8 +186,8 @@ func (c *realWorldClient) GetComments(ctx context.Context, in *GetCommentsReques
 	return out, nil
 }
 
-func (c *realWorldClient) DeleteComment(ctx context.Context, in *DeleteCommentRequest, opts ...grpc.CallOption) (*SingleComment, error) {
-	out := new(SingleComment)
+func (c *realWorldClient) DeleteComment(ctx context.Context, in *DeleteCommentRequest, opts ...grpc.CallOption) (*SingleCommentReply, error) {
+	out := new(SingleCommentReply)
 	err := c.cc.Invoke(ctx, "/realworld.v1.RealWorld/DeleteComment", in, out, opts...)
 	if err != nil {
 		return nil, err
@@ -195,8 +195,8 @@ func (c *realWorldClient) DeleteComment(ctx context.Context, in *DeleteCommentRe
 	return out, nil
 }
 
-func (c *realWorldClient) FavoriteArticle(ctx context.Context, in *FavoriteArticleRequest, opts ...grpc.CallOption) (*Article, error) {
-	out := new(Article)
+func (c *realWorldClient) FavoriteArticle(ctx context.Context, in *FavoriteArticleRequest, opts ...grpc.CallOption) (*SingleArticleReply, error) {
+	out := new(SingleArticleReply)
 	err := c.cc.Invoke(ctx, "/realworld.v1.RealWorld/FavoriteArticle", in, out, opts...)
 	if err != nil {
 		return nil, err
@@ -204,8 +204,8 @@ func (c *realWorldClient) FavoriteArticle(ctx context.Context, in *FavoriteArtic
 	return out, nil
 }
 
-func (c *realWorldClient) UnFavoriteArticle(ctx context.Context, in *UnFavoriteArticleRequest, opts ...grpc.CallOption) (*Article, error) {
-	out := new(Article)
+func (c *realWorldClient) UnFavoriteArticle(ctx context.Context, in *UnFavoriteArticleRequest, opts ...grpc.CallOption) (*SingleArticleReply, error) {
+	out := new(SingleArticleReply)
 	err := c.cc.Invoke(ctx, "/realworld.v1.RealWorld/UnFavoriteArticle", in, out, opts...)
 	if err != nil {
 		return nil, err
@@ -239,11 +239,11 @@ type RealWorldServer interface {
 	CreateArticle(context.Context, *CreateArticleRequest) (*SingleArticleReply, error)
 	UpdateArticle(context.Context, *UpdateArticleRequest) (*SingleArticleReply, error)
 	DeleteArticle(context.Context, *DeleteArticleRequest) (*SingleArticleReply, error)
-	AddComments(context.Context, *AddCommentsRequest) (*SingleComment, error)
+	AddComment(context.Context, *AddCommentRequest) (*SingleCommentReply, error)
 	GetComments(context.Context, *GetCommentsRequest) (*MultipleCommentsReply, error)
-	DeleteComment(context.Context, *DeleteCommentRequest) (*SingleComment, error)
-	FavoriteArticle(context.Context, *FavoriteArticleRequest) (*Article, error)
-	UnFavoriteArticle(context.Context, *UnFavoriteArticleRequest) (*Article, error)
+	DeleteComment(context.Context, *DeleteCommentRequest) (*SingleCommentReply, error)
+	FavoriteArticle(context.Context, *FavoriteArticleRequest) (*SingleArticleReply, error)
+	UnFavoriteArticle(context.Context, *UnFavoriteArticleRequest) (*SingleArticleReply, error)
 	GetTags(context.Context, *GetTagsRequest) (*TagListReply, error)
 	mustEmbedUnimplementedRealWorldServer()
 }
@@ -291,19 +291,19 @@ func (UnimplementedRealWorldServer) UpdateArticle(context.Context, *UpdateArticl
 func (UnimplementedRealWorldServer) DeleteArticle(context.Context, *DeleteArticleRequest) (*SingleArticleReply, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method DeleteArticle not implemented")
 }
-func (UnimplementedRealWorldServer) AddComments(context.Context, *AddCommentsRequest) (*SingleComment, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method AddComments not implemented")
+func (UnimplementedRealWorldServer) AddComment(context.Context, *AddCommentRequest) (*SingleCommentReply, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method AddComment not implemented")
 }
 func (UnimplementedRealWorldServer) GetComments(context.Context, *GetCommentsRequest) (*MultipleCommentsReply, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetComments not implemented")
 }
-func (UnimplementedRealWorldServer) DeleteComment(context.Context, *DeleteCommentRequest) (*SingleComment, error) {
+func (UnimplementedRealWorldServer) DeleteComment(context.Context, *DeleteCommentRequest) (*SingleCommentReply, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method DeleteComment not implemented")
 }
-func (UnimplementedRealWorldServer) FavoriteArticle(context.Context, *FavoriteArticleRequest) (*Article, error) {
+func (UnimplementedRealWorldServer) FavoriteArticle(context.Context, *FavoriteArticleRequest) (*SingleArticleReply, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method FavoriteArticle not implemented")
 }
-func (UnimplementedRealWorldServer) UnFavoriteArticle(context.Context, *UnFavoriteArticleRequest) (*Article, error) {
+func (UnimplementedRealWorldServer) UnFavoriteArticle(context.Context, *UnFavoriteArticleRequest) (*SingleArticleReply, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method UnFavoriteArticle not implemented")
 }
 func (UnimplementedRealWorldServer) GetTags(context.Context, *GetTagsRequest) (*TagListReply, error) {
@@ -556,20 +556,20 @@ func _RealWorld_DeleteArticle_Handler(srv interface{}, ctx context.Context, dec 
 	return interceptor(ctx, in, info, handler)
 }
 
-func _RealWorld_AddComments_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(AddCommentsRequest)
+func _RealWorld_AddComment_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(AddCommentRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(RealWorldServer).AddComments(ctx, in)
+		return srv.(RealWorldServer).AddComment(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/realworld.v1.RealWorld/AddComments",
+		FullMethod: "/realworld.v1.RealWorld/AddComment",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(RealWorldServer).AddComments(ctx, req.(*AddCommentsRequest))
+		return srv.(RealWorldServer).AddComment(ctx, req.(*AddCommentRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -724,8 +724,8 @@ var RealWorld_ServiceDesc = grpc.ServiceDesc{
 			Handler:    _RealWorld_DeleteArticle_Handler,
 		},
 		{
-			MethodName: "AddComments",
-			Handler:    _RealWorld_AddComments_Handler,
+			MethodName: "AddComment",
+			Handler:    _RealWorld_AddComment_Handler,
 		},
 		{
 			MethodName: "GetComments",

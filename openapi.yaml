@@ -161,7 +161,7 @@ paths:
         post:
             tags:
                 - RealWorld
-            operationId: RealWorld_AddComments
+            operationId: RealWorld_AddComment
             parameters:
                 - name: slug
                   in: path
@@ -172,7 +172,7 @@ paths:
                 content:
                     application/json:
                         schema:
-                            $ref: '#/components/schemas/AddCommentsRequest'
+                            $ref: '#/components/schemas/AddCommentRequest'
                 required: true
             responses:
                 "200":
@@ -180,7 +180,7 @@ paths:
                     content:
                         application/json:
                             schema:
-                                $ref: '#/components/schemas/SingleComment'
+                                $ref: '#/components/schemas/SingleCommentReply'
     /api/articles/{slug}/comments/{id}:
         delete:
             tags:
@@ -204,7 +204,7 @@ paths:
                     content:
                         application/json:
                             schema:
-                                $ref: '#/components/schemas/SingleComment'
+                                $ref: '#/components/schemas/SingleCommentReply'
     /api/articles/{slug}/favorite:
         post:
             tags:
@@ -228,7 +228,7 @@ paths:
                     content:
                         application/json:
                             schema:
-                                $ref: '#/components/schemas/Article'
+                                $ref: '#/components/schemas/SingleArticleReply'
         delete:
             tags:
                 - RealWorld
@@ -245,7 +245,7 @@ paths:
                     content:
                         application/json:
                             schema:
-                                $ref: '#/components/schemas/Article'
+                                $ref: '#/components/schemas/SingleArticleReply'
     /api/profiles/{username}:
         get:
             tags:
@@ -384,55 +384,18 @@ paths:
                                 $ref: '#/components/schemas/UserReply'
 components:
     schemas:
-        AddCommentsRequest:
+        AddCommentRequest:
             type: object
             properties:
                 comment:
-                    $ref: '#/components/schemas/AddCommentsRequest_Comment'
+                    $ref: '#/components/schemas/AddCommentRequest_Comment'
                 slug:
                     type: string
-        AddCommentsRequest_Comment:
+        AddCommentRequest_Comment:
             type: object
             properties:
                 body:
                     type: string
-        Article:
-            type: object
-            properties:
-                slug:
-                    type: string
-                title:
-                    type: string
-                description:
-                    type: string
-                body:
-                    type: string
-                tagList:
-                    type: array
-                    items:
-                        type: string
-                createdAt:
-                    type: string
-                updatedAt:
-                    type: string
-                favorited:
-                    type: boolean
-                favoritesCount:
-                    type: integer
-                    format: uint32
-                author:
-                    $ref: '#/components/schemas/Article_Author'
-        Article_Author:
-            type: object
-            properties:
-                username:
-                    type: string
-                bio:
-                    type: string
-                image:
-                    type: string
-                following:
-                    type: boolean
         CreateArticleRequest:
             type: object
             properties:
@@ -626,12 +589,12 @@ components:
                     type: string
                 following:
                     type: boolean
-        SingleComment:
+        SingleCommentReply:
             type: object
             properties:
                 comment:
-                    $ref: '#/components/schemas/SingleComment_Comment'
-        SingleComment_Author:
+                    $ref: '#/components/schemas/SingleCommentReply_Comment'
+        SingleCommentReply_Author:
             type: object
             properties:
                 username:
@@ -642,7 +605,7 @@ components:
                     type: string
                 following:
                     type: boolean
-        SingleComment_Comment:
+        SingleCommentReply_Comment:
             type: object
             properties:
                 id:
@@ -655,7 +618,7 @@ components:
                 body:
                     type: string
                 author:
-                    $ref: '#/components/schemas/SingleComment_Author'
+                    $ref: '#/components/schemas/SingleCommentReply_Author'
         TagListReply:
             type: object
             properties:

@@ -18,11 +18,11 @@ var _ = binding.EncodeURL
 const _ = http.SupportPackageIsVersion1
 
 type RealWorldHTTPServer interface {
-	AddComments(context.Context, *AddCommentsRequest) (*SingleComment, error)
+	AddComment(context.Context, *AddCommentRequest) (*SingleCommentReply, error)
 	CreateArticle(context.Context, *CreateArticleRequest) (*SingleArticleReply, error)
 	DeleteArticle(context.Context, *DeleteArticleRequest) (*SingleArticleReply, error)
-	DeleteComment(context.Context, *DeleteCommentRequest) (*SingleComment, error)
-	FavoriteArticle(context.Context, *FavoriteArticleRequest) (*Article, error)
+	DeleteComment(context.Context, *DeleteCommentRequest) (*SingleCommentReply, error)
+	FavoriteArticle(context.Context, *FavoriteArticleRequest) (*SingleArticleReply, error)
 	FeedArticles(context.Context, *FeedArticlesRequest) (*MultipleArticlesReply, error)
 	FollowUser(context.Context, *FollowUserRequest) (*ProfileReply, error)
 	GetArticle(context.Context, *GetArticleRequest) (*SingleArticleReply, error)
@@ -33,7 +33,7 @@ type RealWorldHTTPServer interface {
 	ListArticles(context.Context, *ListArticlesRequest) (*MultipleArticlesReply, error)
 	Login(context.Context, *LoginRequest) (*UserReply, error)
 	Register(context.Context, *RegisterRequest) (*UserReply, error)
-	UnFavoriteArticle(context.Context, *UnFavoriteArticleRequest) (*Article, error)
+	UnFavoriteArticle(context.Context, *UnFavoriteArticleRequest) (*SingleArticleReply, error)
 	UnFollowUser(context.Context, *UnFollowUserRequest) (*ProfileReply, error)
 	UpdateArticle(context.Context, *UpdateArticleRequest) (*SingleArticleReply, error)
 	UpdateUser(context.Context, *UpdateUserRequest) (*UserReply, error)
@@ -54,7 +54,7 @@ func RegisterRealWorldHTTPServer(s *http.Server, srv RealWorldHTTPServer) {
 	r.POST("/api/articles", _RealWorld_CreateArticle0_HTTP_Handler(srv))
 	r.PUT("/api/articles/{slug}", _RealWorld_UpdateArticle0_HTTP_Handler(srv))
 	r.DELETE("/api/articles/{slug}", _RealWorld_DeleteArticle0_HTTP_Handler(srv))
-	r.POST("/api/articles/{slug}/comments", _RealWorld_AddComments0_HTTP_Handler(srv))
+	r.POST("/api/articles/{slug}/comments", _RealWorld_AddComment0_HTTP_Handler(srv))
 	r.GET("/api/articles/{slug}/comments", _RealWorld_GetComments0_HTTP_Handler(srv))
 	r.DELETE("/api/articles/{slug}/comments/{id}", _RealWorld_DeleteComment0_HTTP_Handler(srv))
 	r.POST("/api/articles/{slug}/favorite", _RealWorld_FavoriteArticle0_HTTP_Handler(srv))
@@ -327,24 +327,24 @@ func _RealWorld_DeleteArticle0_HTTP_Handler(srv RealWorldHTTPServer) func(ctx ht
 	}
 }
 
-func _RealWorld_AddComments0_HTTP_Handler(srv RealWorldHTTPServer) func(ctx http.Context) error {
+func _RealWorld_AddComment0_HTTP_Handler(srv RealWorldHTTPServer) func(ctx http.Context) error {
 	return func(ctx http.Context) error {
-		var in AddCommentsRequest
+		var in AddCommentRequest
 		if err := ctx.Bind(&in); err != nil {
 			return err
 		}
 		if err := ctx.BindVars(&in); err != nil {
 			return err
 		}
-		http.SetOperation(ctx, "/realworld.v1.RealWorld/AddComments")
+		http.SetOperation(ctx, "/realworld.v1.RealWorld/AddComment")
 		h := ctx.Middleware(func(ctx context.Context, req interface{}) (interface{}, error) {
-			return srv.AddComments(ctx, req.(*AddCommentsRequest))
+			return srv.AddComment(ctx, req.(*AddCommentRequest))
 		})
 		out, err := h(ctx, &in)
 		if err != nil {
 			return err
 		}
-		reply := out.(*SingleComment)
+		reply := out.(*SingleCommentReply)
 		return ctx.Result(200, reply)
 	}
 }
@@ -388,7 +388,7 @@ func _RealWorld_DeleteComment0_HTTP_Handler(srv RealWorldHTTPServer) func(ctx ht
 		if err != nil {
 			return err
 		}
-		reply := out.(*SingleComment)
+		reply := out.(*SingleCommentReply)
 		return ctx.Result(200, reply)
 	}
 }
@@ -410,7 +410,7 @@ func _RealWorld_FavoriteArticle0_HTTP_Handler(srv RealWorldHTTPServer) func(ctx 
 		if err != nil {
 			return err
 		}
-		reply := out.(*Article)
+		reply := out.(*SingleArticleReply)
 		return ctx.Result(200, reply)
 	}
 }
@@ -432,7 +432,7 @@ func _RealWorld_UnFavoriteArticle0_HTTP_Handler(srv RealWorldHTTPServer) func(ct
 		if err != nil {
 			return err
 		}
-		reply := out.(*Article)
+		reply := out.(*SingleArticleReply)
 		return ctx.Result(200, reply)
 	}
 }
@@ -457,11 +457,11 @@ func _RealWorld_GetTags0_HTTP_Handler(srv RealWorldHTTPServer) func(ctx http.Con
 }
 
 type RealWorldHTTPClient interface {
-	AddComments(ctx context.Context, req *AddCommentsRequest, opts ...http.CallOption) (rsp *SingleComment, err error)
+	AddComment(ctx context.Context, req *AddCommentRequest, opts ...http.CallOption) (rsp *SingleCommentReply, err error)
 	CreateArticle(ctx context.Context, req *CreateArticleRequest, opts ...http.CallOption) (rsp *SingleArticleReply, err error)
 	DeleteArticle(ctx context.Context, req *DeleteArticleRequest, opts ...http.CallOption) (rsp *SingleArticleReply, err error)
-	DeleteComment(ctx context.Context, req *DeleteCommentRequest, opts ...http.CallOption) (rsp *SingleComment, err error)
-	FavoriteArticle(ctx context.Context, req *FavoriteArticleRequest, opts ...http.CallOption) (rsp *Article, err error)
+	DeleteComment(ctx context.Context, req *DeleteCommentRequest, opts ...http.CallOption) (rsp *SingleCommentReply, err error)
+	FavoriteArticle(ctx context.Context, req *FavoriteArticleRequest, opts ...http.CallOption) (rsp *SingleArticleReply, err error)
 	FeedArticles(ctx context.Context, req *FeedArticlesRequest, opts ...http.CallOption) (rsp *MultipleArticlesReply, err error)
 	FollowUser(ctx context.Context, req *FollowUserRequest, opts ...http.CallOption) (rsp *ProfileReply, err error)
 	GetArticle(ctx context.Context, req *GetArticleRequest, opts ...http.CallOption) (rsp *SingleArticleReply, err error)
@@ -472,7 +472,7 @@ type RealWorldHTTPClient interface {
 	ListArticles(ctx context.Context, req *ListArticlesRequest, opts ...http.CallOption) (rsp *MultipleArticlesReply, err error)
 	Login(ctx context.Context, req *LoginRequest, opts ...http.CallOption) (rsp *UserReply, err error)
 	Register(ctx context.Context, req *RegisterRequest, opts ...http.CallOption) (rsp *UserReply, err error)
-	UnFavoriteArticle(ctx context.Context, req *UnFavoriteArticleRequest, opts ...http.CallOption) (rsp *Article, err error)
+	UnFavoriteArticle(ctx context.Context, req *UnFavoriteArticleRequest, opts ...http.CallOption) (rsp *SingleArticleReply, err error)
 	UnFollowUser(ctx context.Context, req *UnFollowUserRequest, opts ...http.CallOption) (rsp *ProfileReply, err error)
 	UpdateArticle(ctx context.Context, req *UpdateArticleRequest, opts ...http.CallOption) (rsp *SingleArticleReply, err error)
 	UpdateUser(ctx context.Context, req *UpdateUserRequest, opts ...http.CallOption) (rsp *UserReply, err error)
@@ -486,11 +486,11 @@ func NewRealWorldHTTPClient(client *http.Client) RealWorldHTTPClient {
 	return &RealWorldHTTPClientImpl{client}
 }
 
-func (c *RealWorldHTTPClientImpl) AddComments(ctx context.Context, in *AddCommentsRequest, opts ...http.CallOption) (*SingleComment, error) {
-	var out SingleComment
+func (c *RealWorldHTTPClientImpl) AddComment(ctx context.Context, in *AddCommentRequest, opts ...http.CallOption) (*SingleCommentReply, error) {
+	var out SingleCommentReply
 	pattern := "/api/articles/{slug}/comments"
 	path := binding.EncodeURL(pattern, in, false)
-	opts = append(opts, http.Operation("/realworld.v1.RealWorld/AddComments"))
+	opts = append(opts, http.Operation("/realworld.v1.RealWorld/AddComment"))
 	opts = append(opts, http.PathTemplate(pattern))
 	err := c.cc.Invoke(ctx, "POST", path, in, &out, opts...)
 	if err != nil {
@@ -525,8 +525,8 @@ func (c *RealWorldHTTPClientImpl) DeleteArticle(ctx context.Context, in *DeleteA
 	return &out, err
 }
 
-func (c *RealWorldHTTPClientImpl) DeleteComment(ctx context.Context, in *DeleteCommentRequest, opts ...http.CallOption) (*SingleComment, error) {
-	var out SingleComment
+func (c *RealWorldHTTPClientImpl) DeleteComment(ctx context.Context, in *DeleteCommentRequest, opts ...http.CallOption) (*SingleCommentReply, error) {
+	var out SingleCommentReply
 	pattern := "/api/articles/{slug}/comments/{id}"
 	path := binding.EncodeURL(pattern, in, true)
 	opts = append(opts, http.Operation("/realworld.v1.RealWorld/DeleteComment"))
@@ -538,8 +538,8 @@ func (c *RealWorldHTTPClientImpl) DeleteComment(ctx context.Context, in *DeleteC
 	return &out, err
 }
 
-func (c *RealWorldHTTPClientImpl) FavoriteArticle(ctx context.Context, in *FavoriteArticleRequest, opts ...http.CallOption) (*Article, error) {
-	var out Article
+func (c *RealWorldHTTPClientImpl) FavoriteArticle(ctx context.Context, in *FavoriteArticleRequest, opts ...http.CallOption) (*SingleArticleReply, error) {
+	var out SingleArticleReply
 	pattern := "/api/articles/{slug}/favorite"
 	path := binding.EncodeURL(pattern, in, false)
 	opts = append(opts, http.Operation("/realworld.v1.RealWorld/FavoriteArticle"))
@@ -681,8 +681,8 @@ func (c *RealWorldHTTPClientImpl) Register(ctx context.Context, in *RegisterRequ
 	return &out, err
 }
 
-func (c *RealWorldHTTPClientImpl) UnFavoriteArticle(ctx context.Context, in *UnFavoriteArticleRequest, opts ...http.CallOption) (*Article, error) {
-	var out Article
+func (c *RealWorldHTTPClientImpl) UnFavoriteArticle(ctx context.Context, in *UnFavoriteArticleRequest, opts ...http.CallOption) (*SingleArticleReply, error) {
+	var out SingleArticleReply
 	pattern := "/api/articles/{slug}/favorite"
 	path := binding.EncodeURL(pattern, in, true)
 	opts = append(opts, http.Operation("/realworld.v1.RealWorld/UnFavoriteArticle"))
