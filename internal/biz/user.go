@@ -6,6 +6,8 @@ import (
 	"fmt"
 	"github.com/go-kratos/kratos/v2/log"
 	"golang.org/x/crypto/bcrypt"
+	"kratos-realworld/internal/conf"
+	"kratos-realworld/internal/pkg/middleware/auth"
 )
 
 // 领域对象
@@ -54,13 +56,18 @@ type ProfileRepo interface {
 type UserUsecase struct {
 	ur UserRepo
 	pr ProfileRepo
+	jwtc *conf.JWT
 	log  *log.Helper
 }
 
-func NewUserUsecase(ur UserRepo, pr ProfileRepo, logger log.Logger) *UserUsecase {
+func NewUserUsecase(ur UserRepo, pr ProfileRepo, logger log.Logger, jwtc *conf.JWT) *UserUsecase {
 	return &UserUsecase{
-		ur:ur, pr: pr, log: log.NewHelper(logger),
+		ur:ur, pr: pr, jwtc: jwtc, log: log.NewHelper(logger),
 	}
+}
+
+func (uc *UserUsecase) generateToken(username string) string{
+	return auth.GenerateToken(uc.jwtc.Token, username)
 }
 
 func (uc *UserUsecase) Register(ctx context.Context, username, email, password string) (*UserLogin, error) {
@@ -75,7 +82,7 @@ func (uc *UserUsecase) Register(ctx context.Context, username, email, password s
 	return &UserLogin{
 		Email: email,
 		Username: username,
-		Token: "abc",
+		Token: uc.generateToken(username),
 	}, nil
 }
 
@@ -92,6 +99,6 @@ func (uc *UserUsecase) Login(ctx context.Context, email, password string) (*User
 		Username: u.Username,
 		Bio: u.Bio,
 		Image: u.Image,
-		Token: "abc",
+		Token: uc.generateToken(u.Username),
 	}, nil
 }
