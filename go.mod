@@ -10,6 +10,7 @@ require (
 	github.com/go-kratos/kratos/v2 v2.2.0
 	github.com/golang-jwt/jwt/v4 v4.4.1 // indirect
 	github.com/google/wire v0.5.0
+	github.com/gorilla/handlers v1.5.1 // indirect
 	github.com/mgutz/ansi v0.0.0-20200706080929-d51e80ef957d // indirect
 	github.com/stretchr/testify v1.7.1 // indirect
 	golang.org/x/crypto v0.0.0-20220321153916-2c7772ba3064
