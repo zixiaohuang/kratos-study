@@ -41,6 +41,23 @@ api:
  	       --openapi_out==paths=source_relative:. \
 	       $(API_PROTO_FILES)
 
+.PHONY: restartdb
+# start db
+restartdb:
+	cd deploy/mysql && docker-compose restart
+
+.PHONY: startdb
+# start db
+startdb:
+	cd deploy/mysql && docker-compose up -d
+
+.PHONY: stopdb
+# stop db
+stopdb:
+	cd deploy/mysql && docker-compose down
+
+
+
 .PHONY: build
 # build
 build:
