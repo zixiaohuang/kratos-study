@@ -2,8 +2,8 @@ package biz
 
 import (
 	"context"
-	"errors"
 	"fmt"
+	"github.com/go-kratos/kratos/v2/errors"
 	"github.com/go-kratos/kratos/v2/log"
 	"golang.org/x/crypto/bcrypt"
 	"kratos-realworld/internal/conf"
@@ -87,12 +87,16 @@ func (uc *UserUsecase) Register(ctx context.Context, username, email, password s
 }
 
 func (uc *UserUsecase) Login(ctx context.Context, email, password string) (*UserLogin, error) {
+	if len(email) == 0 {
+		return nil, errors.New(422, "email", "can't not be empty")
+	}
+
 	u, err := uc.ur.GetUserByEmail(ctx, email)
 	if err != nil {
 		return nil, err
 	}
 	if !verifyPassword(u.PasswordHash, password) {
-		return nil, errors.New("login failed")
+		return nil, errors.Unauthorized("user", "login failed")
 	}
 	return &UserLogin{
 		Email: u.Email,

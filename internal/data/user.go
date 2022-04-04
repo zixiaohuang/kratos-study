@@ -2,6 +2,7 @@ package data
 
 import (
 	"context"
+	"github.com/go-kratos/kratos/v2/errors"
 	"github.com/go-kratos/kratos/v2/log"
 	"gorm.io/gorm"
 	"kratos-realworld/internal/biz"
@@ -43,8 +44,23 @@ func (r *userRepo) CreateUser(ctx context.Context, u *biz.User) error {
 	return rv.Error
 }
 
-func (uc *userRepo) GetUserByEmail(ctx context.Context, email string) (*biz.User, error) {
-	return nil, nil
+func (uc *userRepo) GetUserByEmail(ctx context.Context, email string) (rv *biz.User,err error) {
+	u := new(User)
+	result := uc.data.db.Where("email = ?", email).First(u)
+	if errors.Is(result.Error, gorm.ErrRecordNotFound) {
+		return nil, errors.NotFound("user", "not found by email")
+	}
+
+	if result.Error != nil {
+		return nil, err
+	}
+	return &biz.User{
+		Email: u.Email,
+		Username: u.Username,
+		Bio:	u.Bio,
+		Image: u.Image,
+		PasswordHash: u.PasswordHash,
+	}, nil
 }
 
 
